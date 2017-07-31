@@ -2,8 +2,12 @@ import 'babel-polyfill'
 
 import { createApp } from './app.js'
 
+const isDev = process.env.NODE_ENV !== 'production'
+
 export default context => {
   return new Promise((resolve, reject) => {
+
+    const s = isDev && Date.now()
 
     const { app, router} = createApp()
     const {url} = context
@@ -25,7 +29,6 @@ export default context => {
       }
       // 对所有匹配的路由组件调用 `asyncData()`
       Promise.all(matchedComponents.map(Component=> {
-        console.log('2222', Component.asyncData);
         if (Component.asyncData) {
           console.log('来过');
           // return Component.asyncData({
@@ -38,6 +41,7 @@ export default context => {
         // 我们的 store 现在已经填充入渲染应用程序所需要的状态。
         // 当我们将状态附加到上下文， 并且 `template` 选项用于 render 时,
         // 状态将自动序列化为 `window.__INITIAL_STATE__` , 并注入 HTML。
+        isDev && console.log(`data pre-fetch: ${Date.now() - s}ms`)
         // context.state = store.state
         // console.log('server-state', context.state.home)
         resolve(app)

@@ -25,7 +25,7 @@ function createRenderer(bundle, options) {
     //   maxAge: 1000 * 60 * 15
     // }),
     basedir: resolve('./dist'),
-    runInNewContext: false
+    runInNewContext: true
   }))
 }
 
@@ -78,7 +78,7 @@ function render(req, res) {
   })
 }
 
-app.use('*', isProd ? render : (req, res) => {
+app.get('*', isProd ? render : (req, res) => {
   console.log('8888');
   readyPromise.then(() => render(req, res))
 })
