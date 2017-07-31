@@ -35,3 +35,7 @@ app.get('*', isProd ? render : (req, res) => {
 - `runInNewContext: false` 不能设为 `true`
 
 - `renderToStream` 有bug 现在改为用 `renderToString`
+
+## 参考文档
+
+1. [https://github.com/ChuckCZC/vue-demo-maizuo](https://github.com/ChuckCZC/vue-demo-maizuo)

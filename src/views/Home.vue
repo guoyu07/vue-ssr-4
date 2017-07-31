@@ -1,11 +1,13 @@
 <template>
   <div>
-    <h2 class="title">Home Page<span v-text="title"></span></h2>
-     <div v-for="(item, index) in banner" :key="item.id">
-        <a :href="item.url">
-          <img :src="item.imageUrl" alt="">
-        </a>
-      </div>
+    <h2 class="title">Home Page
+      <span v-text="title"></span>
+    </h2>
+    <div v-for="(item, index) in banner" :key="item.id">
+      <a :href="item.url">
+        <img :src="item.imageUrl" alt="">
+      </a>
+    </div>
   </div>
 </template>
 <script>
@@ -26,8 +28,8 @@ export default {
     if (this.coming.length === 0) {
       this.getComingSoon()
     }
-    this.setTitle('日报表')
-    this.comConf({title: '我是第二次修改名称'})
+    // this.setTitle('日报表')
+    this.comConf({ title: '我是第二次修改名称' })
     this.$nextTick(function () {
     })
   },
@@ -49,7 +51,7 @@ export default {
       comConf: 'comConf'
     })
   },
-  async asyncData({store, route}) {
+  async asyncData({ store, route }) {
     await store.dispatch('getBannerList')
     // await store.dispatch('setTitle', {
     //   title: '吃饭啦'
@@ -58,4 +60,10 @@ export default {
 }
 </script>
 
+<style lang="scss" scoped>
+.title {
+  font-size: 24px;
+  color: #333;
+}
+</style>
 

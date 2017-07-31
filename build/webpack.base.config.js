@@ -1,23 +1,39 @@
-const path = require('path')
-const webpack = require('webpack')
-const vueConfig = require('./vue-loader.config')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
-const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
+const path = require('path');
+const webpack = require('webpack');
+const vueConfig = require('./vue-loader.config');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 
-const isProd = process.env.NODE_ENV === 'production'
+const isProd = process.env.NODE_ENV === 'production';
+
+function resolve(dir = '.') {
+  return path.join(__dirname, '..', dir);
+}
+
+const rootPath = resolve('.');
+const srcPath = resolve('src');
+// const faviconPath = resolve('src/assets/favicon.ico');
+const buildPath = resolve('dist');
+const nodeModulesPath = resolve('node_modules');
 
 module.exports = {
-  devtool: isProd
-    ? false
-    : '#cheap-module-source-map',
+  devtool: isProd ? false : '#cheap-module-source-map',
   output: {
     path: path.resolve(__dirname, '../dist'),
     publicPath: '/dist/',
     filename: '[name].[chunkhash].js'
   },
   resolve: {
+    modules: ['node_modules', nodeModulesPath],
+    enforceExtension: false,
+    enforceModuleExtension: false,
+    modules: ['node_modules', nodeModulesPath],
+    enforceExtension: false,
+    enforceModuleExtension: false,
     alias: {
-      'public': path.resolve(__dirname, '../public')
+      '@': resolve('src'),
+      SRC: resolve('src'),
+      public: path.resolve(__dirname, '../public')
     }
   },
   module: {
@@ -49,6 +65,15 @@ module.exports = {
               fallback: 'vue-style-loader'
             })
           : ['vue-style-loader', 'css-loader']
+      },
+      {
+        test: /\.(scss|sass)$/,
+        use: isProd
+          ? ExtractTextPlugin.extract({
+              use: ['css-loader?minimize', 'postcss-loader', 'sass-loader'],
+              fallback: 'vue-style-loader'
+            })
+          : ['vue-style-loader', 'css-loader', 'postcss-loader', 'sass-loader']
       }
     ]
   },
@@ -65,7 +90,5 @@ module.exports = {
           filename: 'common.[chunkhash].css'
         })
       ]
-    : [
-        new FriendlyErrorsPlugin()
-      ]
-}
+    : [new FriendlyErrorsPlugin()]
+};
