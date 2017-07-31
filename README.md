@@ -33,3 +33,5 @@ app.get('*', isProd ? render : (req, res) => {
 ```
 
 - `runInNewContext: false` 不能设为 `true`
+
+- `renderToStream` 有bug 现在改为用 `renderToString`
