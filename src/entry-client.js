@@ -1,5 +1,28 @@
+import 'babel-polyfill'
+import Vue from 'vue'
 import {createApp} from './app.js'
+
+// a global mixin that calls `asyncData` when a route component's params change
+Vue.mixin({
+  beforeRouteUpdate (to, from, next) {
+    const { asyncData } = this.$options
+    if (asyncData) {
+      // asyncData({
+      //   store: this.$store,
+      //   route: to
+      // }).then(next).catch(next)
+    } else {
+      next()
+    }
+  }
+})
+
 const {app, router} = createApp()
+
+// 填充state
+if (window.__INITIAL_STATE__) {
+  // store.replaceState(window.__INITIAL_STATE__)
+}
 
 router.onReady(() => {
   // 添加路由钩子函数，用于处理 asyncData.
@@ -26,8 +49,11 @@ router.onReady(() => {
       }
     })).then(() => {
       // 停止加载指示器 (loading indicator)
+      // console.log('client_state: ', store.state);
       next()
     }).catch(next)
   })
+
+  // 挂载dom
   app.$mount('#app')
 })

@@ -1,0 +1,23 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "clean": "rimraf node_modules dist && npm cache clean && cnpm cache clean",
+    "start": "npm run server",
+    "fix": "eslint src/**/*.js **/*.js --fix",
+    "server": "nodemon index.js"
+  },
+  "dependencies": {
+    "@types/node": "^7.0.22",
+    "koa": "^2.2.0",
+    "koa-convert": "^1.2.0",
+    "koa-cors": "^0.0.16",
+    "koa-router": "^7.2.0",
+    "node-fetch": "^2.0.0-alpha.4"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

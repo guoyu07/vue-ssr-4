@@ -9,7 +9,6 @@ const { createBundleRenderer } = require('vue-server-renderer')
 const resolve = file => path.resolve(__dirname, file)
 
 const isProd = process.env.NODE_ENV === 'production'
-console.log('isProd: ', isProd)
 
 const app = express()
 
@@ -21,10 +20,10 @@ let readyPromise
 function createRenderer(bundle, options) {
   return createBundleRenderer(bundle, Object.assign(options, {
     template,
-    cache: LRU({
-      max: 1000,
-      maxAge: 1000 * 60 * 15
-    }),
+    // cache: LRU({
+    //   max: 1000,
+    //   maxAge: 1000 * 60 * 15
+    // }),
     basedir: resolve('./dist'),
     runInNewContext: false
   }))
@@ -43,12 +42,12 @@ if (isProd) {
 }
 
 const serve = (path, cache) => express.static(resolve(path), {
-  maxAge: cache && isProd ? 60 * 60 * 24 * 30 : 0
+  maxAge: cache && isProd ? 1000 * 60 * 60 * 24 * 30 : 0
 })
 
 app.use('/dist', serve('./dist', true))
 
-app.use('*', (req, res) => {
+function render(req, res) {
   if (!renderer) {
     return res.end('waiting for compilation... refresh in a moment.')
   }
@@ -57,19 +56,31 @@ app.use('*', (req, res) => {
   res.setHeader('Content-Type', 'text/html')
 
   const errorHandler = err => {
-    if (err && err.code === 404) {
+    if (err && err.url) {
+      res.redirect(err.url)
+    } else if (err && err.code === 404) {
       res.status(404).end('404 | Page Not Found')
     } else {
       res.status(500).end('500 | Internal Server Error')
       console.error(`error during render: ${req.url}`);
-      console.error(err);
+      console.error(err.stack);
     }
   }
 
-  renderer.renderToStream({title: 'SSR DEMO', url: req.url})
-  .on('error', errorHandler)
-  .on('end', () => console.log(`whole request: ${Date.now() - s}ms`))
-  .pipe(res)
+  renderer.renderToString({title: 'SSR DEMO', url: req.url}, (err, html) => {
+    if (err) {
+      return errorHandler
+    }
+    res.end(html)
+    if (!isProd) {
+      console.log(`whole request: ${Date.now() - s}ms`)
+    }
+  })
+}
+
+app.use('*', isProd ? render : (req, res) => {
+  console.log('8888');
+  readyPromise.then(() => render(req, res))
 })
 
 const port = process.env.PORT || 3000
