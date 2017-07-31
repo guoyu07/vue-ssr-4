@@ -49,7 +49,7 @@ router.onReady(() => {
       }
     })).then(() => {
       // 停止加载指示器 (loading indicator)
-      console.log('client_state: ', store.state);
+      // console.log('client_state: ', store.state);
       next()
     }).catch(next)
   })

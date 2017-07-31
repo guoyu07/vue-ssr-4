@@ -42,7 +42,7 @@ export default context => {
         // 状态将自动序列化为 `window.__INITIAL_STATE__` , 并注入 HTML。
         isDev && console.log(`data pre-fetch: ${Date.now() - s}ms`)
         context.state = store.state
-        console.log('server-state', context.state.home.banner)
+        // console.log('server-state', context.state.home.banner)
         resolve(app)
       }).catch(reject)
     }, reject)

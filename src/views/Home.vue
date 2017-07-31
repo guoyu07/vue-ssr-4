@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2 class="title">Home Page</h2>
-     <div v-for="(index, item) in banner" :key="index + 1">
+     <div v-for="(item, index) in banner" :key="item.id">
         <a :href="item.url">
           <img :src="item.imageUrl" alt="">
         </a>
@@ -12,6 +12,7 @@
 import { mapGetters, mapActions } from 'vuex'
 export default {
   mounted() {
+    console.log(this.banner);
     // if (this.banner.length === 0) {
     //   this.getBannerList()
     // }
