@@ -25,7 +25,7 @@ function createRenderer(bundle, options) {
     //   maxAge: 1000 * 60 * 15
     // }),
     basedir: resolve('./dist'),
-    runInNewContext: true
+    runInNewContext: false
   }))
 }
 
@@ -47,10 +47,10 @@ const serve = (path, cache) => express.static(resolve(path), {
 
 app.use('/dist', serve('./dist', true))
 
-function render(req, res) {
-  if (!renderer) {
-    return res.end('waiting for compilation... refresh in a moment.')
-  }
+ function render(req, res) {
+  // if (!renderer) {
+  //   return res.end('waiting for compilation... refresh in a moment.')
+  // }
   const s = Date.now()
 
   res.setHeader('Content-Type', 'text/html')
@@ -79,7 +79,6 @@ function render(req, res) {
 }
 
 app.get('*', isProd ? render : (req, res) => {
-  console.log('8888');
   readyPromise.then(() => render(req, res))
 })
 

@@ -9,7 +9,7 @@ export default context => {
 
     const s = isDev && Date.now()
 
-    const { app, router} = createApp()
+    const { app, router, store} = createApp()
     const {url} = context
     console.log('303030')
     console.log('url: ', url);
@@ -17,7 +17,7 @@ export default context => {
 
     console.log('fullPath: ', fullPath);
     if (fullPath !== url) {
-      // reject({ url: fullPath })
+      reject({ url: fullPath })
     }
     // 设置路由地址
     router.push(url)
@@ -30,11 +30,10 @@ export default context => {
       // 对所有匹配的路由组件调用 `asyncData()`
       Promise.all(matchedComponents.map(Component=> {
         if (Component.asyncData) {
-          console.log('来过');
-          // return Component.asyncData({
-          //   store,
-          //   route: router.currentRoute
-          // })
+          return Component.asyncData({
+            store,
+            route: router.currentRoute
+          })
         }
       })).then(() => {
         // 在所有预取钩子(preFetch hook) resolve 后，
@@ -42,8 +41,8 @@ export default context => {
         // 当我们将状态附加到上下文， 并且 `template` 选项用于 render 时,
         // 状态将自动序列化为 `window.__INITIAL_STATE__` , 并注入 HTML。
         isDev && console.log(`data pre-fetch: ${Date.now() - s}ms`)
-        // context.state = store.state
-        // console.log('server-state', context.state.home)
+        context.state = store.state
+        console.log('server-state', context.state.home.banner)
         resolve(app)
       }).catch(reject)
     }, reject)

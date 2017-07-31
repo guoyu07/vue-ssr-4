@@ -7,21 +7,21 @@ Vue.mixin({
   beforeRouteUpdate (to, from, next) {
     const { asyncData } = this.$options
     if (asyncData) {
-      // asyncData({
-      //   store: this.$store,
-      //   route: to
-      // }).then(next).catch(next)
+      asyncData({
+        store: this.$store,
+        route: to
+      }).then(next).catch(next)
     } else {
       next()
     }
   }
 })
 
-const {app, router} = createApp()
+const {app, router, store} = createApp()
 
 // 填充state
 if (window.__INITIAL_STATE__) {
-  // store.replaceState(window.__INITIAL_STATE__)
+  store.replaceState(window.__INITIAL_STATE__)
 }
 
 router.onReady(() => {
@@ -45,11 +45,11 @@ router.onReady(() => {
     // 如果有加载指示器(loading indicator), 就触发
     Promise.all(activated.map(c => {
       if (c.asyncData) {
-        // return c.asyncData({store, route: to})
+        return c.asyncData({store, route: to})
       }
     })).then(() => {
       // 停止加载指示器 (loading indicator)
-      // console.log('client_state: ', store.state);
+      console.log('client_state: ', store.state);
       next()
     }).catch(next)
   })

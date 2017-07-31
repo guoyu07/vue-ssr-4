@@ -31,3 +31,5 @@ app.get('*', isProd ? render : (req, res) => {
   readyPromise.then(() => render(req, res))
 })
 ```
+
+- `runInNewContext: false` 不能设为 `true`
